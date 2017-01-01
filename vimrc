@@ -1,107 +1,137 @@
 set nocompatible
+
+" PAthogen
+" -------------
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+call pathogen#infect()
+call pathogen#helptags()
+
+" -------------
+" Syntax and indent
+" -------------
 syntax on
+set showmatch
+
+" hilight current line
+augroup CursorLineOnltInActiveWindow
+    autocmd!
+    autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    autocmd WinLeave * setlocal nocursorline
+augroup END
+
 set t_Co=256
+let g:solarized_termcolors=256
+let g:solarized_bold=0
+"set background=dark
+colorscheme solarized
+"colorscheme default
+"colorscheme badwolf
 set background=dark
 
-filetype plugin indent on
+highlight SignColumn ctermbg=234
+"highlight StatusLine cterm=bold ctermfg=245 ctermbg=235
+"highlight StatusLineNC ctermfg=245 ctermbg=235
 
-" Shortcuts
-let leader=","
-let mapleader=","
-let g:ctrlp_map = '<Leader>l' " Ctrl-p
-nnoremap <Leader>ö :Ack<Space>
+filetype plugin indent on
+set autoindent
+
+" -------------
+" Basic editing
+" -------------
+set nu		" number
+set rnu		" relative number
+set incsearch
+set hls
+set listchars=tab:>>,nbsp:~ 	" set list to see tabs
+set lbr		" linebreak
+set ruler	" show current position in file
+set scrolloff=5	" above and below
+set noshowmode
+set laststatus=2
+set backspace=indent,eol,start
+set timeout timeoutlen=1000 ttimeoutlen=1000	" fix slow 0 inserts
+set autochdir	" set current dir to dir of last opened file
+set hidden
+set history=8192
+set nojoinspaces
+set expandtab
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set ignorecase
+set smartcase
+set ttyfast
+"set wildmode=longest,list
+set wildmenu wildmode=longest:full,full
+set wildignore=*.beam,*.o,*/.git/*,*.swp,*.html,*.d,*.DCD
+
+" -----------
+" Misc config
+" -----------
+let mapleader=','
+let leader=','
+set splitbelow
+
+nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
+nnoremap <leader>e :e $MYVIMRC<cr>
+
+map <leader>pp :setlocal paste!<cr>
 map <C-n> :bn<cr>
 map <C-p> :bp<cr>
-noremap <tab> v>
-noremap <s-tab> v<
-vnoremap <tab> v>
-vnoremap <s-tab> v<
+nmap <Leader>. :bn<cr>
+nmap <Leader>- :bp<cr>
+nnoremap <C-c> :bp\|bd #<CR>
 
-nmap <Leader>. :bn<CR>
-nmap <Leader>m :bp<CR>
-nmap <Leader>p :set paste!<cr>
+inoremap $1 ()<esc>i
+
 nmap Q gqap
 nmap <SPACE> /
 inoremap jj <ESC>
 
-nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
-nnoremap <leader>e :e $MYVIMRC<cr>
-nnoremap <C-c> :bp\|bd #<CR>
-nnoremap <C-h> <C-w>h
+" quicker window movement
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
-" Modes
-let g:erlang_show_errors=0
+" multiple cursors
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_next_key='<C-a>'
+let g:multi_cursor_prev_key='<C-q>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<ESC>'
 
-syntax enable
-set encoding=utf-8
+" nerdtree
+nnoremap <Leader>n :NERDTreeToggle<CR>
+nnoremap <Leader>f :NERDTreeFind<CR>
 
-set textwidth=79        " Width
-set colorcolumn=+1
-set expandtab           " Spaces instead of tabs
-set tabstop=8
-set softtabstop=4
-set shiftwidth=4
-set autoindent
-set smartindent
+" tagbar
+nnoremap <Leader>t :TagbarToggle<CR>
+" gundo
+nnoremap <Leader>u :GundoToggle<CR>
 
-" Colors
-hi ColorColumn ctermbg=black
-"hi StatusLine ctermbg=darkblue ctermfg=white
-hi StatusLineNC ctermbg=black ctermfg=red
-hi Identifier   ctermfg=red cterm=none guifg=palegreen
+" ctrlp
+nnoremap ; :CtrlPBuffer<CR>
+let g:ctrlp_switch_buffer = 0
+let g:ctrlp_show_hidden = 1
+let g:ctrlp_map = '<Leader>l' " Ctrl-P
 
-
-set nowrap
-set nobackup
-set autoread            " Reread files when changed
-set ruler               " Show line and column number
-"set cursorline        " Hightlight the screen line
-set linebreak     " Do linebreaks
-set incsearch     " Incremental search
-set ignorecase          " No case when searching
-set hlsearch      " Hilight search
-set scrolloff=3       " Add three lines of spac%e
-" "set relativenumber     " Show linenumbers
-set backspace=eol,start,indent
-set wildignore=*.beam,*.o,*/.git/*,*.swp,*.html,*.d,*.DCD
-set laststatus=2
-set wildmenu
-set wildmode=longest,list
-
-if hostname() == "snorgars"
-   set shiftwidth=4
+" ag
+let g:ag_mapping_message=0
+" "command -nargs=+ Gag Gcd | Ag! <args>
+nnoremap K :Ag "\b<C-R><C-W>\b"<CR>:cw<CR>
+if executable('ag')
+    let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
 endif
 
-nnoremap <silent> <leader>q :lclose<bar>b#<bar>bd #<CR>
-
-" CtrlP
-let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|\.(git|hg|svn)$'
-let g:ctrlp_user_command = {
-    \ 'types': {
-        \ 1: ['.git', 'cd %s && git ls-files --cached --exclude-standard --others'],
-        \ 2: ['.hg', 'hg --cwd %s locate -I .'],
-        \ },
-    \ 'fallback': 'find %s -type f'
-    \ }
-
-" Autocommand
-autocmd bufwritepost .vimrc source $MYVIMRC
-autocmd FileType text setlocal textwidth=78
-
+" Match whitespace
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
 
 if has("autocmd")
-      au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+  " delete any trailing whitespaces
+  autocmd BufWritePre * :%s/\s\+$//ge
 endif
 
-" Filetypes
-au FileType make set noexpandtab    " Use real tabs
 
