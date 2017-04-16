@@ -11,6 +11,7 @@
     ~/.tmux.conf: tmux.conf
     ~/.vim: vim
     ~/.vimrc: vimrc
+    ~/.gvimrc: gvimrc
     ~/.bash_profile: bash_profile
 
 - shell:

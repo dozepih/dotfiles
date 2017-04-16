@@ -35,6 +35,11 @@ highlight SignColumn ctermbg=234
 filetype plugin indent on
 set autoindent
 
+"---------
+"  Folding
+"---------
+set foldmethod=marker
+
 " -------------
 " Basic editing
 " -------------
