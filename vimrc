@@ -35,16 +35,11 @@ highlight SignColumn ctermbg=234
 filetype plugin indent on
 set autoindent
 
-"---------
-"  Folding
-"---------
-set foldmethod=marker
-
 " -------------
 " Basic editing
 " -------------
 set nu		" number
-set rnu		" relative number
+"set rnu		" relative number
 set incsearch
 set hls
 set listchars=tab:>>,nbsp:~ 	" set list to see tabs

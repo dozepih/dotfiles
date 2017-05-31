@@ -1,0 +1,138 @@
+set nocompatible
+set t_Co=256
+
+execute pathogen#infect()
+syntax on
+filetype plugin indent on
+
+syntax enable
+set background=dark
+let g:solarized_termcolors=256
+"let g:solarized_bold=1
+
+
+" customized colors
+"highlight SignColumn ctermbg=234
+"highlight StatusLine cterm=bold ctermfg=245 ctermbg=235
+"highlight StatusLineNC cterm=bold ctermfg=245 ctermbg=235
+"let g:NeatStatusLine_color_normal='ctermfg=64 ctermbg=235 cterm=bold'
+"let g:NeatStatusLine_color_insert='ctermfg=136 ctermbg=235 cterm=bold'
+"let g:NeatStatusLine_color_replace='ctermfg=160 ctermbg=235 cterm=bold'
+"let g:NeatStatusLine_color_visual='ctermfg=33 ctermbg=235 cterm=bold'
+"let g:NeatStatusLine_color_position='ctermfg=245 ctermbg=235 cterm=bold'
+"let g:NeatStatusLine_color_modified='ctermfg=166 ctermbg=235 cterm=bold'
+"let g:NeatStatusLine_color_line='ctermfg=61 ctermbg=235 cterm=bold'
+"let g:NeatStatusLine_color_filetype='ctermfg=37 ctermbg=235 cterm=bold'
+
+" Shortcuts
+let leader=","
+let mapleader=","
+let g:ctrlp_map = '<Leader>l' " Ctrl-p
+nnoremap <Leader>ö :Ack<Space>
+map <C-n> :bn<cr>
+map <C-p> :bp<cr>
+noremap <tab> v>
+noremap <s-tab> v<
+vnoremap <tab> v>
+vnoremap <s-tab> v<
+
+nmap <Leader>. :bn<CR>
+nmap <Leader>m :bp<CR>
+nmap <Leader>p :set paste!<cr>
+nmap Q gqap
+nmap <SPACE> /
+inoremap jj <ESC>
+
+nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
+nnoremap <leader>e :e $MYVIMRC<cr>
+nnoremap <C-c> :bp\|bd #<CR>
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Modes
+let g:erlang_show_errors=0
+
+syntax enable
+set encoding=utf-8
+
+set textwidth=79        " Width
+set colorcolumn=+1
+set expandtab           " Spaces instead of tabs
+set tabstop=8
+set softtabstop=4
+set shiftwidth=4
+set autoindent
+set smartindent
+
+set ttyfast
+nnoremap B ^
+nnoremap E $
+
+" Colors
+hi ColorColumn ctermbg=black
+"hi StatusLine ctermbg=darkblue ctermfg=white
+hi StatusLineNC ctermbg=black ctermfg=red
+hi Identifier   ctermfg=red cterm=none guifg=palegreen
+
+
+set nowrap
+set nobackup
+set autoread            " Reread files when changed
+set ruler               " Show line and column number
+set cursorline        " Hightlight the screen line
+set linebreak     " Do linebreaks
+set incsearch     " Incremental search
+set ignorecase          " No case when searching
+set hlsearch      " Hilight search
+set scrolloff=3       " Add three lines of spac%e
+" "set relativenumber     " Show linenumbers
+set backspace=eol,start,indent
+set wildignore=*.beam,*.o,*/.git/*,*.swp,*.html,*.d,*.DCD
+set laststatus=2
+set wildmenu
+set wildmode=longest,list
+
+nnoremap <silent> <leader>q :lclose<bar>b#<bar>bd #<CR>
+
+" multiple cursors
+let g:multi_cursor_next_key='<C-a>'
+let g:multi_cursor_prev_key='<C-d>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<ESC>'
+
+" ctrlp
+nnoremap ; :CtrlPBuffer<CR>
+let g:ctrlp_switch_buffer = 0
+let g:ctrlp_show_hidden = 1
+let g:ctrlp_map = '<Leader>l' " Ctrl-P
+
+" ag
+let g:ag_mapping_message=0
+"command -nargs=+ Gag Gcd | Ag! <args>
+nnoremap K :Ag "\b<C-R><C-W>\b"<CR>:cw<CR>
+if executable('ag')
+    let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
+endif
+
+" Autocommand
+autocmd bufwritepost .vimrc source $MYVIMRC
+autocmd FileType text setlocal textwidth=78
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+
+if has("autocmd")
+      au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+" Filetypes
+au FileType make set noexpandtab    " Use real tabs
+
+" Colors
+colorscheme solarized

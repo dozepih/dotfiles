@@ -1,37 +1,35 @@
-export PATH="${HOME}/bin:${PATH}"
+# Add `~/bin` to the `$PATH`
+export PATH="$HOME/bin:$PATH";
 
-[ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
+# Load the shell dotfiles, and then some:
+# * ~/.path can be used to extend `$PATH`.
+# * ~/.extra can be used for other settings you don’t want to commit.
+for file in ~/.{path,bash_prompt,exports,aliases,functions,extra}; do
+	[ -r "$file" ] && [ -f "$file" ] && source "$file";
+done;
 
-PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-alias ls='ls -G'
-alias ll='ls -l'
-alias la='ls -la'
-alias lt='ls -lt'
+# Case-insensitive globbing (used in pathname expansion)
+shopt -s nocaseglob;
 
-export EDITOR=vim
-export VISUAL=vim
+# # Append to the Bash history file, rather than overwriting it
+shopt -s histappend;
 
-_tmuxinator() {
-    COMPREPLY=()
-    local word
-    word="${COMP_WORDS[COMP_CWORD]}"
+# # Autocorrect typos in path names when using `cd`
+shopt -s cdspell;
 
-    if [ "$COMP_CWORD" -eq 1 ]; then
-        local commands="$(compgen -W "$(tmuxinator commands)" -- "$word")"
-        local projects="$(compgen -W "$(tmuxinator completions start)" -- "$word")"
+# Enable some Bash 4 features when possible:
+# * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
+# * Recursive globbing, e.g. `echo **/*.txt`
+for option in autocd globstar; do
+   shopt -s "$option" 2> /dev/null;
+done;
 
-        COMPREPLY=( $commands $projects )
-    elif [ "$COMP_CWORD" -eq 2 ]; then
-        local words
-        words=("${COMP_WORDS[@]}")
-        unset words[0]
-        unset words[$COMP_CWORD]
-        local completions
-        completions=$(tmuxinator completions "${words[@]}")
-        COMPREPLY=( $(compgen -W "$completions" -- "$word") )
-    fi
+function cd {
+    builtin cd "$@" && ls -F
 }
 
-complete -F _tmuxinator tmuxinator mux
-alias mux="tmuxinator"
+  [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
 
+  if [ -f /usr/local/share/bash-completion/bash_completion ]; then
+    . /usr/local/share/bash-completion/bash_completion
+  fi
